@@ -17,6 +17,8 @@ import {
   BellRing,
   UserCheck,
   ChevronRight,
+  User,
+  LogOut,
 } from 'lucide-react';
 import { Profile, UserRole } from '../../types/database';
 
@@ -24,6 +26,7 @@ interface SidebarProps {
   currentUser: Profile;
   activeModule: string;
   onSelectModule: (moduleId: string) => void;
+  onLogout?: () => void;
 }
 
 interface NavItem {
@@ -38,6 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   currentUser,
   activeModule,
   onSelectModule,
+  onLogout,
 }) => {
   const allRoles: UserRole[] = [
     'super_admin',
@@ -59,6 +63,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
       roles: allRoles,
     },
     {
+      id: 'subjects',
+      label: 'Mata Pelajaran SMA',
+      icon: BookOpen,
+      roles: allRoles,
+      badge: '21 Mapel',
+    },
+    {
       id: 'users',
       label: 'Manajemen Pengguna',
       icon: Users,
@@ -69,13 +80,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Manajemen Akademik',
       icon: GraduationCap,
       roles: ['super_admin', 'wakasek_kurikulum', 'kepala_sekolah', 'operator'],
-    },
-    {
-      id: 'learning',
-      label: 'Ruang Pembelajaran',
-      icon: BookOpen,
-      roles: ['super_admin', 'wakasek_kurikulum', 'guru', 'wali_kelas', 'siswa'],
-      badge: 'Aktif',
     },
     {
       id: 'assignments',
@@ -134,13 +138,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       roles: allRoles,
     },
     {
-      id: 'electives',
-      label: 'Mapel Pilihan (Fase F)',
-      icon: Compass,
-      roles: ['super_admin', 'wakasek_kurikulum', 'guru', 'wali_kelas', 'guru_bk', 'siswa'],
-      badge: 'Fase F',
-    },
-    {
       id: 'communication',
       label: 'Pengumuman & Pesan',
       icon: BellRing,
@@ -157,6 +154,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Pengaturan Sistem',
       icon: Settings,
       roles: ['super_admin', 'operator'],
+    },
+    {
+      id: 'profile',
+      label: 'Profil Pengguna',
+      icon: User,
+      roles: allRoles,
     },
   ];
 
@@ -212,8 +215,38 @@ export const Sidebar: React.FC<SidebarProps> = ({
         })}
       </nav>
 
+      {/* Current User Quick Profile & Logout Bar */}
+      <div className="p-3 border-t border-slate-800 bg-slate-950/70 flex items-center justify-between gap-2">
+        <button
+          onClick={() => onSelectModule('profile')}
+          className="flex items-center gap-2.5 min-w-0 text-left hover:opacity-90 transition-opacity cursor-pointer group flex-1"
+          title="Buka Pengaturan Profil Pengguna"
+        >
+          <div className="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0 ring-1 ring-blue-400">
+            {currentUser.fullName.charAt(0)}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold text-white truncate group-hover:text-blue-300 transition-colors">
+              {currentUser.fullName}
+            </p>
+            <p className="text-[10px] text-slate-400 truncate">
+              Profil Akun &bull; Edit
+            </p>
+          </div>
+        </button>
+        {onLogout && (
+          <button
+            onClick={onLogout}
+            className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded-lg transition-colors cursor-pointer shrink-0"
+            title="Keluar Akun (Logout)"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </div>
+
       {/* Footer Info */}
-      <div className="p-4 border-t border-slate-800 text-[11px] text-slate-400 space-y-1 bg-slate-950/20">
+      <div className="p-3 border-t border-slate-800 text-[10px] text-slate-400 space-y-1 bg-slate-950/30">
         <div className="flex items-center justify-between">
           <span className="text-slate-400">Tahun Ajaran:</span>
           <span className="font-semibold text-slate-300 tabular-nums">2024/2025</span>

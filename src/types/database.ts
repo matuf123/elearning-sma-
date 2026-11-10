@@ -73,8 +73,7 @@ export interface Subject {
   id: string;
   code: string;
   name: string;
-  fase?: 'Fase E' | 'Fase F';
-  category: 'Umum (Wajib)' | 'Pilihan MIPA' | 'Pilihan IPS' | 'Pilihan Bahasa' | 'Seni Budaya & Prakarya' | 'Muatan Lokal';
+  category?: string;
   creditHours: number;
   kkm: number;
   teacherId?: string;

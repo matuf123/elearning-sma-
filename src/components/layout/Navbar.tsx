@@ -8,6 +8,7 @@ import {
   Shield,
   Bell,
   Search,
+  User,
 } from 'lucide-react';
 import { Profile, SchoolSetting, UserRole } from '../../types/database';
 import { ROLE_LABELS, ROLE_BADGE_COLORS } from '../../lib/auth';
@@ -32,6 +33,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSwitchUser,
   onViewLanding,
   onOpenNotifications,
+  activeModule,
+  onSelectModule,
   searchTerm,
   onSearchChange,
 }) => {
@@ -184,6 +187,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
 
               <div className="py-1">
+                <button
+                  onClick={() => {
+                    setShowUserMenu(false);
+                    onSelectModule('profile');
+                  }}
+                  className="w-full text-left px-4 py-2 text-xs text-blue-900 hover:bg-blue-50 flex items-center gap-2.5 cursor-pointer font-semibold"
+                >
+                  <User className="w-3.5 h-3.5 text-blue-700" />
+                  Pengaturan Profil & Akun
+                </button>
                 <button
                   onClick={() => {
                     setShowUserMenu(false);

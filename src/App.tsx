@@ -46,7 +46,6 @@ import { LandingPage } from './components/landing/LandingPage';
 import { RoleDashboard } from './components/dashboard/RoleDashboard';
 import { UserManagement } from './components/modules/UserManagement';
 import { AcademicManagement } from './components/modules/AcademicManagement';
-import { LearningClassroom } from './components/modules/LearningClassroom';
 import { AssignmentModule } from './components/modules/AssignmentModule';
 import { OnlineExamModule } from './components/modules/OnlineExamModule';
 import { GradeManagement } from './components/modules/GradeManagement';
@@ -56,10 +55,11 @@ import { ReportCardModule } from './components/modules/ReportCardModule';
 import { CounselingModule } from './components/modules/CounselingModule';
 import { ParentDashboardModule } from './components/modules/ParentDashboardModule';
 import { LibraryModule } from './components/modules/LibraryModule';
-import { ElectiveSelectionModule } from './components/modules/ElectiveSelectionModule';
+import { SubjectsListModule } from './components/modules/SubjectsListModule';
 import { CommunicationModule } from './components/modules/CommunicationModule';
 import { ReportsModule } from './components/modules/ReportsModule';
 import { SettingsModule } from './components/modules/SettingsModule';
+import { ProfileModule } from './components/modules/ProfileModule';
 
 export default function App() {
   const [db, setDb] = useState<AppDatabaseState>(DEFAULT_DATABASE_STATE);
@@ -102,6 +102,19 @@ export default function App() {
     } else {
       setActiveModule('dashboard');
     }
+  };
+
+  const handleUpdateProfile = async (updated: Profile) => {
+    setCurrentUser(updated);
+    setStoredUser(updated);
+    const updatedProfiles = db.profiles.map((p) => (p.id === updated.id ? updated : p));
+    await handleUpdateDatabase({ ...db, profiles: updatedProfiles });
+  };
+
+  const handleLogout = () => {
+    clearStoredUser();
+    setActiveView('landing');
+    setActiveModule('dashboard');
   };
 
   const handleAudit = (action: string, resource: string, details: string) => {
@@ -177,6 +190,7 @@ export default function App() {
             setActiveModule(id);
             setSelectedStudentForReport(undefined);
           }}
+          onLogout={handleLogout}
         />
 
         {/* Content Viewport */}
@@ -218,19 +232,6 @@ export default function App() {
               onSaveClasses={(classes) => handleUpdateDatabase({ ...db, classes })}
               onSaveSubjects={(subjects) => handleUpdateDatabase({ ...db, subjects })}
               onSaveSchedules={(schedules) => handleUpdateDatabase({ ...db, schedules })}
-              onLogAudit={handleAudit}
-            />
-          )}
-
-          {activeModule === 'learning' && (
-            <LearningClassroom
-              materials={db.materials}
-              comments={db.comments}
-              classes={db.classes}
-              subjects={db.subjects}
-              currentUser={currentUser}
-              onSaveMaterials={(materials) => handleUpdateDatabase({ ...db, materials })}
-              onSaveComments={(comments) => handleUpdateDatabase({ ...db, comments })}
               onLogAudit={handleAudit}
             />
           )}
@@ -348,14 +349,10 @@ export default function App() {
             />
           )}
 
-          {activeModule === 'electives' && (
-            <ElectiveSelectionModule
-              electives={db.electives}
+          {activeModule === 'subjects' && (
+            <SubjectsListModule
               subjects={db.subjects}
-              students={db.students}
               currentUser={currentUser}
-              onSaveElectives={(electives) => handleUpdateDatabase({ ...db, electives })}
-              onLogAudit={handleAudit}
             />
           )}
 
@@ -387,6 +384,17 @@ export default function App() {
               onSaveSettings={(settings) => handleUpdateDatabase({ ...db, settings })}
               onResetDatabase={handleResetDatabase}
               onExportDatabaseJson={handleExportDatabaseJson}
+              onLogAudit={handleAudit}
+            />
+          )}
+
+          {activeModule === 'profile' && (
+            <ProfileModule
+              currentUser={currentUser}
+              profiles={db.profiles}
+              onUpdateProfile={handleUpdateProfile}
+              onSwitchUser={handleSwitchUser}
+              onLogout={handleLogout}
               onLogAudit={handleAudit}
             />
           )}

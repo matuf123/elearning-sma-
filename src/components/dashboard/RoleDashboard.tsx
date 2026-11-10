@@ -116,10 +116,10 @@ export const RoleDashboard: React.FC<RoleDashboardProps> = ({
 
         <div className="flex items-center gap-2 shrink-0">
           <button
-            onClick={() => onNavigate('learning')}
+            onClick={() => onNavigate('exams')}
             className="px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors cursor-pointer whitespace-nowrap"
           >
-            Ruang Belajar Digital
+            Ujian Online CBT
           </button>
           <button
             onClick={() => onNavigate('report_cards')}

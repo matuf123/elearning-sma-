@@ -155,9 +155,7 @@ CREATE TABLE IF NOT EXISTS class_students (
 CREATE TABLE IF NOT EXISTS subjects (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   code VARCHAR(16) UNIQUE NOT NULL,
-  name VARCHAR(64) NOT NULL,
-  fase VARCHAR(16) DEFAULT 'Fase E',
-  category VARCHAR(32) NOT NULL DEFAULT 'Umum (Wajib)' CHECK (category IN ('Umum (Wajib)', 'Pilihan MIPA', 'Pilihan IPS', 'Pilihan Bahasa', 'Seni Budaya & Prakarya', 'Muatan Lokal')),
+  name VARCHAR(128) NOT NULL,
   credit_hours INT DEFAULT 2,
   kkm NUMERIC(5, 2) DEFAULT 75.00,
   created_at TIMESTAMPTZ DEFAULT NOW()
@@ -637,6 +635,34 @@ CREATE POLICY "Teachers grade submissions" ON assignment_submissions
       WHERE profiles.auth_user_id = auth.uid() AND profiles.role IN ('guru', 'super_admin')
     )
   );
+
+-- ==============================================================================
+-- 13. SEEDER: 21 MATA PELAJARAN SMA PGRI 4 GANDRUNGMANGU
+-- ==============================================================================
+INSERT INTO subjects (code, name, credit_hours, kkm) VALUES
+  ('PAI-01', 'Pendidikan Agama dan Budi Pekerti', 3, 75.00),
+  ('PPKN-02', 'Pendidikan Pancasila', 2, 75.00),
+  ('BIND-03', 'Bahasa Indonesia', 4, 76.00),
+  ('BIND-TL-04', 'Bahasa Indonesia Tingkat Lanjut', 4, 75.00),
+  ('MAT-05', 'Matematika', 4, 75.00),
+  ('MAT-TL-06', 'Matematika Tingkat Lanjut', 5, 75.00),
+  ('BING-07', 'Bahasa Inggris', 3, 75.00),
+  ('BING-TL-08', 'Bahasa Inggris Tingkat Lanjut', 4, 75.00),
+  ('PJOK-09', 'Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)', 3, 75.00),
+  ('SEJ-10', 'Sejarah', 2, 75.00),
+  ('INF-11', 'Informatika', 3, 78.00),
+  ('BIO-12', 'Biologi', 4, 75.00),
+  ('FIS-13', 'Fisika', 4, 75.00),
+  ('KIM-14', 'Kimia', 4, 75.00),
+  ('SOS-15', 'Sosiologi', 4, 75.00),
+  ('EKO-16', 'Ekonomi', 4, 75.00),
+  ('GEO-17', 'Geografi', 4, 75.00),
+  ('ANT-18', 'Antropologi', 3, 75.00),
+  ('BAS-19', 'Bahasa Asing', 3, 75.00),
+  ('SBD-20', 'Seni dan Budaya (Musik, Rupa, Teater, Tari)', 2, 75.00),
+  ('PKWU-21', 'Prakarya dan Kewirausahaan (Rekayasa, Kerajinan, Budidaya, Pengolahan)', 2, 75.00)
+ON CONFLICT (code) DO UPDATE 
+SET name = EXCLUDED.name, credit_hours = EXCLUDED.credit_hours, kkm = EXCLUDED.kkm;
 
 -- ==============================================================================
 -- END OF SCHEMA

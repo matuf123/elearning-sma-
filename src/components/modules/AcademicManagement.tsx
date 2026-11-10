@@ -51,9 +51,7 @@ export const AcademicManagement: React.FC<AcademicManagementProps> = ({
   const [showAddSubject, setShowAddSubject] = useState(false);
   const [subCode, setSubCode] = useState('');
   const [subName, setSubName] = useState('');
-  const [subFase, setSubFase] = useState<'Fase E' | 'Fase F'>('Fase E');
-  const [subCategory, setSubCategory] = useState<Subject['category']>('Umum (Wajib)');
-  const [subHours, setSubHours] = useState(2);
+  const [subHours, setSubHours] = useState(3);
   const [subKkm, setSubKkm] = useState(75);
   const [subTeacherId, setSubTeacherId] = useState(teachers[0]?.profileId || '');
 
@@ -108,8 +106,6 @@ export const AcademicManagement: React.FC<AcademicManagementProps> = ({
       id: 'sub-' + Date.now(),
       code: subCode.toUpperCase(),
       name: subName,
-      fase: subFase,
-      category: subCategory,
       creditHours: Number(subHours),
       kkm: Number(subKkm),
       teacherId: subTeacherId,
@@ -294,13 +290,18 @@ export const AcademicManagement: React.FC<AcademicManagementProps> = ({
       {/* TAB 2: MAPEL */}
       {activeTab === 'mapel' && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-slate-900">
-              Struktur Kurikulum & Mata Pelajaran
-            </h3>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h3 className="text-base font-bold text-slate-900">
+                Daftar Mata Pelajaran SMA ({subjects.length})
+              </h3>
+              <p className="text-xs text-slate-500">
+                Seluruh 21 mata pelajaran SMA PGRI 4 Gandrungmangu ditampilkan secara langsung tanpa pembatasan rumpun atau filter kategori.
+              </p>
+            </div>
             <button
               onClick={() => setShowAddSubject(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-900 hover:bg-blue-800 text-white text-xs font-semibold rounded-lg cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-900 hover:bg-blue-800 text-white text-xs font-semibold rounded-lg cursor-pointer shrink-0"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Tambah Mata Pelajaran</span>
@@ -311,22 +312,22 @@ export const AcademicManagement: React.FC<AcademicManagementProps> = ({
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 text-slate-700 border-b border-slate-200 font-bold uppercase text-[10px]">
                 <tr>
-                  <th className="px-4 py-3">Kode</th>
+                  <th className="px-3 py-3 text-center w-12">No</th>
+                  <th className="px-4 py-3 w-28">Kode</th>
                   <th className="px-4 py-3">Nama Mata Pelajaran</th>
-                  <th className="px-4 py-3">Kategori</th>
-                  <th className="px-4 py-3 text-center">Beban Jam</th>
-                  <th className="px-4 py-3 text-center">KKM</th>
+                  <th className="px-4 py-3 text-center w-28">Beban Jam</th>
+                  <th className="px-4 py-3 text-center w-20">KKM</th>
                   <th className="px-4 py-3">Guru Pengampu</th>
-                  <th className="px-4 py-3 text-right">Aksi</th>
+                  <th className="px-4 py-3 text-right w-16">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {subjects.map((sub) => (
-                  <tr key={sub.id} className="hover:bg-slate-50">
+                {subjects.map((sub, idx) => (
+                  <tr key={sub.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-3 py-3 text-center font-mono text-slate-400 font-semibold">{idx + 1}</td>
                     <td className="px-4 py-3 font-mono font-bold text-blue-900">{sub.code}</td>
                     <td className="px-4 py-3 font-semibold text-slate-900">{sub.name}</td>
-                    <td className="px-4 py-3 text-slate-600">{sub.category}</td>
-                    <td className="px-4 py-3 text-center font-mono tabular-nums">{sub.creditHours} JP</td>
+                    <td className="px-4 py-3 text-center font-mono tabular-nums text-slate-700">{sub.creditHours} JP</td>
                     <td className="px-4 py-3 text-center font-bold text-emerald-700 font-mono tabular-nums">
                       {sub.kkm}
                     </td>
@@ -335,6 +336,7 @@ export const AcademicManagement: React.FC<AcademicManagementProps> = ({
                       <button
                         onClick={() => handleDeleteSubject(sub.id, sub.name)}
                         className="p-1 text-slate-400 hover:text-rose-600 rounded transition-colors cursor-pointer"
+                        title="Hapus mata pelajaran"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -541,44 +543,16 @@ export const AcademicManagement: React.FC<AcademicManagementProps> = ({
               Tambah Mata Pelajaran Baru
             </h3>
             <form onSubmit={handleCreateSubject} className="mt-4 space-y-3 text-xs">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Kode Mapel *</label>
-                  <input
-                    type="text"
-                    required
-                    value={subCode}
-                    onChange={(e) => setSubCode(e.target.value)}
-                    placeholder="BIO-F"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono uppercase"
-                  />
-                </div>
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Fase Kurikulum</label>
-                  <select
-                    value={subFase}
-                    onChange={(e) => setSubFase(e.target.value as any)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white"
-                  >
-                    <option value="Fase E">Fase E (Kelas X)</option>
-                    <option value="Fase F">Fase F (Kelas XI/XII)</option>
-                  </select>
-                </div>
-              </div>
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Kategori Kelompok Mapel</label>
-                <select
-                  value={subCategory}
-                  onChange={(e) => setSubCategory(e.target.value as any)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white"
-                >
-                  <option value="Umum (Wajib)">Umum (Wajib)</option>
-                  <option value="Pilihan MIPA">Pilihan MIPA</option>
-                  <option value="Pilihan IPS">Pilihan IPS</option>
-                  <option value="Pilihan Bahasa">Pilihan Bahasa</option>
-                  <option value="Seni Budaya & Prakarya">Seni Budaya & Prakarya</option>
-                  <option value="Muatan Lokal">Muatan Lokal</option>
-                </select>
+                <label className="block font-semibold text-slate-700 mb-1">Kode Mapel *</label>
+                <input
+                  type="text"
+                  required
+                  value={subCode}
+                  onChange={(e) => setSubCode(e.target.value)}
+                  placeholder="KODE-01"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono uppercase"
+                />
               </div>
               <div>
                 <label className="block font-semibold text-slate-700 mb-1">Nama Mata Pelajaran *</label>
@@ -587,10 +561,11 @@ export const AcademicManagement: React.FC<AcademicManagementProps> = ({
                   required
                   value={subName}
                   onChange={(e) => setSubName(e.target.value)}
-                  placeholder="Kimia Terapan"
+                  placeholder="Masukkan nama mata pelajaran..."
                   className="w-full px-3 py-2 border border-slate-300 rounded-lg"
                 />
               </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-slate-700 mb-1">Beban (JP)</label>
