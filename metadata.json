@@ -1,0 +1,6 @@
+{
+  "name": "EduSphere - SMA PGRI 4 Gandrungmangu",
+  "description": "Sistem Informasi Manajemen Sekolah Terpadu & E-Learning SMA PGRI 4 GANDRUNGMANGU",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
